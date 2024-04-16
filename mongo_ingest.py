@@ -1,4 +1,3 @@
-[9:21 PM] Sahithi Dornala
 import pandas as pd
 from pymongo import MongoClient
  
