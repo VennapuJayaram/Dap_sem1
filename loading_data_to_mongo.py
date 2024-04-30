@@ -84,7 +84,7 @@ def ingesting_dataset_2() -> bool:
 
     try:
         # Connect to MongoDB
-        client = MongoClient('mongodb://sahithi:sahithimongo@localhost:27017/admin')
+        client = MongoClient('mongodb://Dap_project_mongo:Dap_mongo@localhost:27017/admin')
         db = client['Dapmongo']
         collection = db['occupancy']
 
