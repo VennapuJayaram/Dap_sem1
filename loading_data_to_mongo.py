@@ -76,3 +76,30 @@ def ingesting_dataset_1() -> bool:
         return False
     logging.info("Data ingestion completed successfully.")
     return True  # Return True if all steps completed successfully
+
+
+@op
+def ingesting_dataset_2() -> bool:
+    file_path = "Occupancy.csv"  # Hardcoded path to the CSV file
+
+    try:
+        # Connect to MongoDB
+        client = MongoClient('mongodb://sahithi:sahithimongo@localhost:27017/admin')
+        db = client['Dapmongo']
+        collection = db['occupancy']
+
+        # Load the CSV file into a Pandas DataFrame
+        df = pd.read_csv(file_path, low_memory=False)
+
+        # Convert the DataFrame to a list of dictionaries for insertion
+        data = df.to_dict(orient='records')
+
+        # Insert the data into MongoDB
+        collection.insert_many(data)
+
+        # Return True if the data insertion is successful
+        return True
+
+    except ( pd.errors.ParserError, Exception ) as e:
+        # Return False if any exception occurs
+        return False
