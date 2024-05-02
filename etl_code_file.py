@@ -21,18 +21,18 @@ def extract_mongo_data(context: OpExecutionContext,  dataset1, dataset2 ):
         # Retrieve and convert data from "enforcement" collection
         enforcement_data = list(db["enforcement"].find())
         enforcement_df = pd.DataFrame(enforcement_data)
-        context.log.info("Fetched and converted enforcement data.")
+        context.log.info("fetching and conversion of enforcement data.")
 
         # Retrieve and convert data from "occupancy" collection
         occupancy_data = list(db["occupancy"].find())
         occupancy_df = pd.DataFrame(occupancy_data)
-        context.log.info("Fetched and converted occupancy data.")
+        context.log.info(" retrieve and conversion of occupancy data.")
 
         # Output the dataframes
         return Output(enforcement_df, "enforcement_df"), Output(occupancy_df, "occupancy_df")
 
     except pymongo.errors.ConnectionError as e:
-        context.log.error(f"Failed to connect to MongoDB: {e}")
+        context.log.error(f"Fail to connect to MongoDB: {e}")
         raise
     except Exception as e:
         context.log.error(f"An error occurred: {e}")
@@ -45,7 +45,7 @@ def extract_mongo_data(context: OpExecutionContext,  dataset1, dataset2 ):
     }
 )
 def transform_and_load(context: OpExecutionContext, enforcement_df: pd.DataFrame, occupancy_df: pd.DataFrame):
-    context.log.info("Starting the data transformation process.")
+    context.log.info("Starting the data transformation and load process.")
    
    
    
@@ -53,7 +53,7 @@ def transform_and_load(context: OpExecutionContext, enforcement_df: pd.DataFrame
         # Strip whitespace from column names
         enforcement_df.columns = enforcement_df.columns.str.strip()
         occupancy_df.columns = occupancy_df.columns.str.strip()
-        context.log.debug("Column names stripped.")
+        context.log.info("Column names stripped.")
  
         # Define columns to drop
         columns_to_drop_in_enforcement = [
@@ -89,7 +89,7 @@ def transform_and_load(context: OpExecutionContext, enforcement_df: pd.DataFrame
         int_columns_occupancy = ["CofO Number", "Zip Code"]
         for col in int_columns_occupancy:
             occupancy_df[col] = occupancy_df[col].fillna(0).astype(int)
-        context.log.debug("Converted specified columns to integer.")
+        context.log.info("Converted specified columns to integer.")
  
         # Handle float columns
         float_columns_enforcement = ["latitude", "longitude"]
@@ -97,7 +97,7 @@ def transform_and_load(context: OpExecutionContext, enforcement_df: pd.DataFrame
             enforcement_df[col] = enforcement_df[col].fillna(0.0).astype(float)
        
        
-        context.log.debug("Converted specified columns to float.")
+        context.log.info("Converted specified columns to float for latitude and longitude.")
  
         # Split and convert latitude/longitude
         occupancy_df[['latitude', 'longitude']] = occupancy_df['Latitude/Longitude'].str.replace(r'\(|\)', '', regex=True).str.split(',', expand=True)
